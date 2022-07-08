@@ -71,9 +71,9 @@ public:
                         _estimate.focal * distortion * pc[1]);
     }
 
-    virtual bool read(istream &in) {}
+    virtual bool read(istream &in) {return false;}
 
-    virtual bool write(ostream &out) const {}
+    virtual bool write(ostream &out) const {return false;}
 };
 
 class VertexPoint : public g2o::BaseVertex<3, Vector3d> {
@@ -90,9 +90,9 @@ public:
         _estimate += Vector3d(update[0], update[1], update[2]);
     }
 
-    virtual bool read(istream &in) {}
+    virtual bool read(istream &in) {return false;}
 
-    virtual bool write(ostream &out) const {}
+    virtual bool write(ostream &out) const {return false;}
 };
 
 class EdgeProjection :
@@ -108,9 +108,9 @@ public:
     }
 
     // use numeric derivatives
-    virtual bool read(istream &in) {}
+    virtual bool read(istream &in) {return false;}
 
-    virtual bool write(ostream &out) const {}
+    virtual bool write(ostream &out) const {return false;}
 
 };
 

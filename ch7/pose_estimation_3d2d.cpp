@@ -51,8 +51,8 @@ int main(int argc, char **argv) {
     return 1;
   }
   //-- 读取图像
-  Mat img_1 = imread(argv[1], CV_LOAD_IMAGE_COLOR);
-  Mat img_2 = imread(argv[2], CV_LOAD_IMAGE_COLOR);
+  Mat img_1 = imread(argv[1], cv::IMREAD_COLOR);
+  Mat img_2 = imread(argv[2], cv::IMREAD_COLOR);
   assert(img_1.data && img_2.data && "Can not load images!");
 
   vector<KeyPoint> keypoints_1, keypoints_2;
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
   cout << "一共找到了" << matches.size() << "组匹配点" << endl;
 
   // 建立3D点
-  Mat d1 = imread(argv[3], CV_LOAD_IMAGE_UNCHANGED);       // 深度图为16位无符号数，单通道图像
+  Mat d1 = imread(argv[3], cv::IMREAD_UNCHANGED);       // 深度图为16位无符号数，单通道图像
   Mat K = (Mat_<double>(3, 3) << 520.9, 0, 325.1, 0, 521.0, 249.7, 0, 0, 1);
   vector<Point3f> pts_3d;
   vector<Point2f> pts_2d;
@@ -259,9 +259,9 @@ public:
     _estimate = Sophus::SE3d::exp(update_eigen) * _estimate;
   }
 
-  virtual bool read(istream &in) override {}
+  virtual bool read(istream &in) override {return false;}
 
-  virtual bool write(ostream &out) const override {}
+  virtual bool write(ostream &out) const override {return false;}
 };
 
 class EdgeProjection : public g2o::BaseUnaryEdge<2, Eigen::Vector2d, VertexPose> {
@@ -295,9 +295,9 @@ public:
       0, -fy / Z, fy * Y / (Z * Z), fy + fy * Y * Y / Z2, -fy * X * Y / Z2, -fy * X / Z;
   }
 
-  virtual bool read(istream &in) override {}
+  virtual bool read(istream &in) override {return false;}
 
-  virtual bool write(ostream &out) const override {}
+    virtual bool write(ostream &out) const override {return false;}
 
 private:
   Eigen::Vector3d _pos3d;
