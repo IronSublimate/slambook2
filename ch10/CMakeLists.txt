@@ -20,9 +20,14 @@ include_directories(${G2O_INCLUDE_DIRS})
 
 find_package(fmt REQUIRED)
 
+find_package(GTSAM REQUIRED)
+include_directories(${GTSAM_INCLUDE_DIRS})
+
+
 add_executable(pose_graph_g2o_SE3 pose_graph_g2o_SE3.cpp)
 target_link_libraries(pose_graph_g2o_SE3
-        g2o_core g2o_stuff g2o_types_slam3d ${CHOLMOD_LIBRARIES}
+        g2o_core g2o_stuff g2o_types_slam3d
+        ${CHOLMOD_LIBRARIES}
         fmt::fmt
         )
 
@@ -34,3 +39,11 @@ target_link_libraries(pose_graph_g2o_lie
         fmt::fmt
         )
 
+#message(1:${GTSAM_LIBS} 2:${GTSAM_LIBRARIES})
+
+add_executable(pose_graph_gtsam pose_graph_gtsam.cpp)
+target_link_libraries(pose_graph_gtsam
+        gtsam
+        OpenMP::OpenMP_CXX
+        ${Sophus_LIBRARIES}
+        )

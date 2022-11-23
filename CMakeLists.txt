@@ -20,6 +20,7 @@ project (slambook2 CXX)
 # cmake --build build/Sophus --target install
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "-march=native")
 
 add_subdirectory(ch2)
 add_subdirectory(ch3)

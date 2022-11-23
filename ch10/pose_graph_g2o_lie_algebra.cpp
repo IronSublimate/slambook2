@@ -49,8 +49,8 @@ public:
         for (int i = 0; i < 7; i++)
             is >> data[i];
         setEstimate(SE3d(
-            Quaterniond(data[6], data[3], data[4], data[5]),
-            Vector3d(data[0], data[1], data[2])
+                Quaterniond(data[6], data[3], data[4], data[5]),
+                Vector3d(data[0], data[1], data[2])
         ));
         return true;
     }
@@ -64,14 +64,14 @@ public:
     }
 
     virtual void setToOriginImpl() override {
-        _estimate = SE3d();
+        _estimate = SE3d(); //李群上4x4的矩阵
     }
 
     // 左乘更新
     virtual void oplusImpl(const double *update) override {
         Vector6d upd;
         upd << update[0], update[1], update[2], update[3], update[4], update[5];
-        _estimate = SE3d::exp(upd) * _estimate;
+        _estimate = SE3d::exp(upd) * _estimate; //SE3d::exp把李代数变回矩阵，exp中已经做了反对称变换
     }
 };
 
@@ -118,7 +118,7 @@ public:
     virtual void computeError() override {
         SE3d v1 = (static_cast<VertexSE3LieAlgebra *> (_vertices[0]))->estimate();
         SE3d v2 = (static_cast<VertexSE3LieAlgebra *> (_vertices[1]))->estimate();
-        _error = (_measurement.inverse() * v1.inverse() * v2).log();
+        _error = (_measurement.inverse() * v1.inverse() * v2).log(); //误差是李代数，measurement是欧式变换矩阵
     }
 
     // 雅可比计算
@@ -147,7 +147,7 @@ int main(int argc, char **argv) {
     typedef g2o::BlockSolver<g2o::BlockSolverTraits<6, 6>> BlockSolverType;
     typedef g2o::LinearSolverEigen<BlockSolverType::PoseMatrixType> LinearSolverType;
     auto solver = new g2o::OptimizationAlgorithmLevenberg(
-        g2o::make_unique<BlockSolverType>(g2o::make_unique<LinearSolverType>()));
+            g2o::make_unique<BlockSolverType>(g2o::make_unique<LinearSolverType>()));
     g2o::SparseOptimizer optimizer;     // 图模型
     optimizer.setAlgorithm(solver);   // 设置求解器
     optimizer.setVerbose(true);       // 打开调试输出
@@ -197,11 +197,11 @@ int main(int argc, char **argv) {
     // 因为用了自定义顶点且没有向g2o注册，这里保存自己来实现
     // 伪装成 SE3 顶点和边，让 g2o_viewer 可以认出
     ofstream fout("result_lie.g2o");
-    for (VertexSE3LieAlgebra *v:vectices) {
+    for (VertexSE3LieAlgebra *v: vectices) {
         fout << "VERTEX_SE3:QUAT ";
         v->write(fout);
     }
-    for (EdgeSE3LieAlgebra *e:edges) {
+    for (EdgeSE3LieAlgebra *e: edges) {
         fout << "EDGE_SE3:QUAT ";
         e->write(fout);
     }

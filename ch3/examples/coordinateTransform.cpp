@@ -16,6 +16,8 @@ int main(int argc, char** argv) {
 
   Isometry3d T1w(q1), T2w(q2);
   T1w.pretranslate(t1);
+  // pretranslate之前的pre表示的是平移在旋转之前的坐标原点的基础上再平移，而不是在新的旋转坐标系下再进行平移
+  //pretanslate 相当于形参左乘this，translate 相当于右乘。
   T2w.pretranslate(t2);
 
   Vector3d p2 = T2w * T1w.inverse() * p1;
